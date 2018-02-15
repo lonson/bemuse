@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import SCENE_MANAGER from 'bemuse/scene-manager'
 import now from 'bemuse/utils/now'
-import workerPath from 'bemuse/hacks/service-worker-url/index.loader.js!serviceworker-loader!./service-worker.js'
+import * as serviceWorker from './service-worker'
 import { OFFICIAL_SERVER_URL } from 'bemuse/music-collection'
 import { createIO, createRun } from 'impure'
 import {
@@ -61,15 +61,9 @@ function bootUp () {
 export function main () {
   runIO(bootUp())
 
-  // setup service worker
-  let promise = setupServiceWorker()
-  if (promise && promise.then) {
-    Promise.resolve(promise)
-      .finally(displayFirstScene)
-      .done()
-  } else {
-    displayFirstScene()
-  }
+  // TODO: re-add service worker
+  serviceWorker.register()
+  displayFirstScene()
 
   // synchronize time
   let timeSynchroServer =
@@ -93,25 +87,6 @@ function getFirstScene () {
     }
     return scene
   }
-}
-
-function shouldActivateServiceWorker () {
-  return (
-    (location.protocol === 'https:' && location.host === 'bemuse.ninja') ||
-    location.hostname === 'localhost'
-  )
-}
-
-function setupServiceWorker () {
-  if (!('serviceWorker' in navigator)) return false
-  if (!shouldActivateServiceWorker()) return false
-  registerServiceWorker()
-  return true
-}
-
-function registerServiceWorker () {
-  const url = '/sw-loader.js?path=' + encodeURIComponent(workerPath)
-  return navigator.serviceWorker.register(url)
 }
 
 window.addEventListener('beforeunload', () => {

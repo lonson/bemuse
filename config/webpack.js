@@ -6,6 +6,8 @@ import { flowRight } from 'lodash'
 import path from './path'
 import webpack from 'webpack'
 import webpackResolve from './webpackResolve'
+import { version } from './buildConfig'
+import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin'
 
 function generateBaseConfig () {
   let config = {
@@ -203,6 +205,20 @@ function applyWebConfig (config) {
         ':' +
         Env.serverPort(),
       'webpack/hot/only-dev-server'
+    )
+  }
+
+  if (Env.production()) {
+    config.plugins.push(
+      new SWPrecacheWebpackPlugin(
+        {
+          cacheId: `bemuse-v${version}`,
+          dontCacheBustUrlsMatching: /\.\w{8}\./,
+          filepath: path('dist', 'build', 'service-worker.js'),
+          minify: true,
+          staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
+        }
+      )
     )
   }
 
