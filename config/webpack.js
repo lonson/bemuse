@@ -214,7 +214,7 @@ function applyWebConfig (config) {
         {
           cacheId: `bemuse-v${version}`,
           dontCacheBustUrlsMatching: /\.\w{8}\./,
-          filepath: path('dist', 'build', 'service-worker.js'),
+          filepath: path('dist', 'service-worker.js'),
           minify: true,
           staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
         }

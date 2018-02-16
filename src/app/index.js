@@ -62,7 +62,11 @@ export function main () {
   runIO(bootUp())
 
   // TODO: re-add service worker
-  serviceWorker.register()
+  serviceWorker.register({
+    onSuccess: (registration) => {
+      serviceWorker.log('Service worker registration complete!', registration)
+    }
+  })
   displayFirstScene()
 
   // synchronize time

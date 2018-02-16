@@ -2,7 +2,7 @@
 
 import version from 'bemuse/utils/version'
 
-function log (...args) {
+export function log (...args) {
   console.log(
     '%c serviceworker %c',
     'background:yellow;color:black',
@@ -32,7 +32,7 @@ export function register (config) {
 
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swUrl = `${location.href}/build/service-worker.js`
+      const swUrl = `${location.href}service-worker.js`
 
       if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
@@ -47,6 +47,9 @@ export function register (config) {
         registerValidSW(swUrl, config)
       }
     })
+
+    // TODO: The old event listeners below needs to be readjusted with the rewritten
+    // service worker. Salvage whatever is available.
 
     window.addEventListener('install', function (event) {
       event.waitUntil(
